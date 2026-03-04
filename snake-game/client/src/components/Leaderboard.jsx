@@ -14,6 +14,7 @@ export default function Leaderboard({ refreshKey }) {
     const [stats, setStats] = useState(null);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLoading(true);
         Promise.all([api.getLeaderboard(), api.getStats()])
             .then(([lbRes, statsRes]) => {

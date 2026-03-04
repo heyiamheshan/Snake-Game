@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export default function ScorePanel({ score, highscore, level, scorePulse }) {
+export default function ScorePanel({ score, highscore, level }) {
     const scoreRef = useRef(null);
     const prevScore = useRef(score);
 

@@ -1,5 +1,4 @@
-export default function Controls({ onDPad, status }) {
-    const isPlaying = status === 'playing' || status === 'paused';
+export default function Controls({ onDPad }) {
 
     return (
         <div style={{ width: '100%' }}>

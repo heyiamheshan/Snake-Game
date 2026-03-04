@@ -65,7 +65,8 @@ export default function App() {
   // Detect game over → save score + shake
   useEffect(() => {
     if (prevStatusRef.current !== 'gameover' && gameState.status === 'gameover') {
-      // Shake animation
+      // Shake animation — eslint-disable-next-line react-hooks/set-state-in-effect
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsShaking(true);
       setTimeout(() => setIsShaking(false), 500);
 
@@ -73,7 +74,7 @@ export default function App() {
       if (playerName && gameState.score > 0 && !scoreSaved) {
         setScoreSaved(true);
         api.saveScore(playerName, gameState.score, gameState.level)
-          .then(res => {
+          .then(() => {
             setLbRefreshKey(k => k + 1);
             // Check for new record
             if (gameState.score > highscore) {
