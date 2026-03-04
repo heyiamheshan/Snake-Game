@@ -1,0 +1,84 @@
+name: CI / CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 1: Backend integration tests (SQLite — no Postgres needed)
+  # ─────────────────────────────────────────────────────────────────────────
+  test-backend:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: snake-game/server
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: snake-game/server/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run integration tests
+        run: npm run test:integration
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 2: Frontend lint + build check
+  # ─────────────────────────────────────────────────────────────────────────
+  test-frontend:
+    name: Frontend Lint & Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: snake-game/client
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: snake-game/client/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_URL: "" # empty for build check; real URL set on Render
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 3: Deploy to Render (only on push to main, after both jobs pass)
+  # ─────────────────────────────────────────────────────────────────────────
+  deploy:
+    name: Deploy to Render
+    needs: [test-backend, test-frontend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Trigger backend deploy
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}")
+          echo "Backend deploy hook returned HTTP $response"
+          [ "$response" = "200" ] || [ "$response" = "201" ] || exit 1
+
+      - name: Trigger frontend deploy
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}")
+          echo "Frontend deploy hook returned HTTP $response"
+          [ "$response" = "200" ] || [ "$response" = "201" ] || exit 1
