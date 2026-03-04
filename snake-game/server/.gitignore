@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Build output
+dist/
+
+# Test artifacts
+tests_integration/generated/
+tests_integration/*.db
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store

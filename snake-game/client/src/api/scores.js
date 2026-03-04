@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const BASE = '/api/scores';
+// In production (Render), VITE_API_URL is the full backend URL e.g. https://snake-backend.onrender.com
+// In local dev it is empty and Vite's dev proxy routes /api → localhost:5000
+const BASE = `${import.meta.env.VITE_API_URL ?? ''}/api/scores`;
+
 
 export const api = {
     saveScore: (playerName, score, level) =>

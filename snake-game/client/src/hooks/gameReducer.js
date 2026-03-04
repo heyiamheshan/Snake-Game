@@ -82,16 +82,11 @@ export function gameReducer(state, action) {
             if (state.status !== 'playing') return state;
             const head = state.snake[0];
             const newHead = {
-                x: head.x + state.direction.x,
-                y: head.y + state.direction.y,
+                x: ((head.x + state.direction.x) + GRID_SIZE) % GRID_SIZE,
+                y: ((head.y + state.direction.y) + GRID_SIZE) % GRID_SIZE,
             };
 
-            // Wall collision
-            if (newHead.x < 0 || newHead.x >= GRID_SIZE || newHead.y < 0 || newHead.y >= GRID_SIZE) {
-                return { ...state, status: 'gameover' };
-            }
-
-            // Self collision (skip tail since it will move)
+            // Self collision only — snake wraps through walls
             if (state.snake.slice(0, -1).some(s => s.x === newHead.x && s.y === newHead.y)) {
                 return { ...state, status: 'gameover' };
             }
