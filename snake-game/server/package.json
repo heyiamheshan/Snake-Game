@@ -9,7 +9,8 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev --name init",
     "db:seed": "node prisma/seed.js",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "test:integration": "NODE_ENV=test DATABASE_URL=file:tests_integration/test.db jest --config tests_integration/jest.config.js --forceExit"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -19,10 +20,21 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
     "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "express-validator": "^7.3.1",
+    "pg": "^8.19.0",
     "prisma": "^7.4.2"
+  },
+  "devDependencies": {
+    "@libsql/client": "^0.17.0",
+    "@prisma/adapter-libsql": "^7.4.2",
+    "jest": "^30.2.0",
+    "supertest": "^7.2.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   }
 }

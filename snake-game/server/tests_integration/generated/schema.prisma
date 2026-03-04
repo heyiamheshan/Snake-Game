@@ -1,0 +1,16 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../tests_integration/generated"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Score {
+  id         Int      @id @default(autoincrement())
+  playerName String
+  score      Int
+  level      Int
+  createdAt  DateTime @default(now())
+}
